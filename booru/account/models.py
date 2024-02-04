@@ -1,7 +1,11 @@
-from django.contrib.auth.models import AbstractUser, User, Group, Permission
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class UserOptions(models.Model):
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+
     # Tag Blacklist
     blacklisted_tags = models.TextField(blank=True, null=True, help_text="Comma-separated list of blacklisted tags")
 
@@ -34,11 +38,7 @@ class UserOptions(models.Model):
     def __str__(self):
         return f"Options for {self.user.username}"
 
-
-class CustomUser(AbstractUser):
-    # One-to-One relationship with UserOptions
-    user_options = models.OneToOneField(UserOptions, on_delete=models.CASCADE, null=True, blank=True, related_name='user_options')
-
-    # Provide unique related_name for groups and user_permissions
-    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
-    user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
+@receiver(post_save, sender=User)
+def create_user_options(sender, instance, created, **kwargs):
+    if created:
+        UserOptions.objects.create(user=instance)

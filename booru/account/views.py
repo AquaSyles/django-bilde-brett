@@ -65,6 +65,6 @@ class SignupView(View):
                 return HttpResponseRedirect(reverse('home:main'))  # Redirect to the main view in the 'home' app
             else:
                 # Handle the case where authentication fails after signup
-                pass
+                return HttpResponseRedirect(reverse('home:main'))
 
         return render(request, self.template_name, {'form': form})
