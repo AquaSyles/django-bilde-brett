@@ -1,0 +1,60 @@
+<!-- account/templates/account/signup.html -->
+{% extends 'home/base.html' %}
+{% load static %}  <!-- Load static files -->
+
+{% block title %}Sign Up - Your Website{% endblock %}
+
+{% block header %}
+  <!-- Link to custom CSS file for signup page -->
+  <link rel="stylesheet" href="{% static 'account/css/signup.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mt-4">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">Sign Up</h2>
+
+          <form method="post" action="{% url 'account:signup' %}">
+            {% csrf_token %}
+            
+            <div class="mb-3 row">
+              <label for="{{ form.username.id_for_label }}" class="col-sm-4 col-form-label text-sm-end">Username:</label>
+              <div class="col-sm-8">
+                {{ form.username }}
+                {% if form.username.errors %}
+                  <div class="text-danger">{{ form.username.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label for="{{ form.password1.id_for_label }}" class="col-sm-4 col-form-label text-sm-end">Password:</label>
+              <div class="col-sm-8">
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                  <div class="text-danger">{{ form.password1.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label for="{{ form.password2.id_for_label }}" class="col-sm-4 col-form-label text-sm-end">Password confirmation:</label>
+              <div class="col-sm-8">
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                  <div class="text-danger">{{ form.password2.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+          </form>
+
+          <p class="mt-3 text-center">Already have an account? <a href="{% url 'account:login' %}">Log in here</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

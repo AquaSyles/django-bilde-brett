@@ -1,0 +1,82 @@
+<!-- account/templates/account/index.html -->
+
+{% extends 'home/base.html' %}
+
+{% block title %}Account{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Account Overview</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% if user.is_authenticated %}
+            <!-- Logout -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-door-closed display-3 mb-3 text-danger"></i>
+                        <h5 class="card-title">Logout</h5>
+                        <a href="{% url 'account:logout' %}" class="btn btn-danger btn-lg rounded">Logout</a>
+                        <p class="card-text mt-3">Securely log out of your account to protect your privacy.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- My Favorites -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-heart display-3 mb-3 text-danger"></i>
+                        <h5 class="card-title">My Favorites</h5>
+                        <a href="#" class="btn btn-danger disabled btn-lg rounded">My Favorites</a>
+                        <p class="card-text mt-3">View and manage your favorite content.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Settings -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-gear-wide-connected display-3 mb-3 text-warning"></i>
+                        <h5 class="card-title">Settings</h5>
+                        <a href="#" class="btn btn-warning disabled btn-lg rounded">Settings</a>
+                        <p class="card-text mt-3">Adjust your account and app settings.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- My Profile -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-person display-3 mb-3 text-info"></i>
+                        <h5 class="card-title">My Profile</h5>
+                        <a href="#" class="btn btn-info disabled btn-lg rounded">My Profile</a>
+                        <p class="card-text mt-3">View and update your profile information.</p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Login -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-door-open display-3 mb-3 text-primary"></i>
+                        <h5 class="card-title">Login</h5>
+                        <a href="{% url 'account:login' %}" class="btn btn-primary btn-lg rounded">Login</a>
+                        <p class="card-text mt-3">Log in to your account to access personalized features.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Sign Up -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-person-plus display-3 mb-3 text-success"></i>
+                        <h5 class="card-title">Sign Up</h5>
+                        <a href="{% url 'account:signup' %}" class="btn btn-success btn-lg rounded">Sign Up</a>
+                        <p class="card-text mt-3">Create a new account and join our community.</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
