@@ -1,5 +1,5 @@
+from django.contrib.auth.models import AbstractUser, User, Group, Permission
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 class UserOptions(models.Model):
     # Tag Blacklist
@@ -38,3 +38,7 @@ class UserOptions(models.Model):
 class CustomUser(AbstractUser):
     # One-to-One relationship with UserOptions
     user_options = models.OneToOneField(UserOptions, on_delete=models.CASCADE, null=True, blank=True, related_name='user_options')
+
+    # Provide unique related_name for groups and user_permissions
+    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
