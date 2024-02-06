@@ -34,6 +34,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'account:account' %}">Account</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'post:post_list' %}">Posts</a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'post:upload_file' %}">Upload</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>

@@ -1,0 +1,21 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4 mb-4">Post List</h2>
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if post.file %}
+                    {% if post.file.url %}
+                        <img class="card-img-top" src="{{ post.file.url|slice:'1:' }}" alt="Image">
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

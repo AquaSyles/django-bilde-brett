@@ -1,0 +1,17 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h2 class="text-center mb-4">Upload File</h2>
+      <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary btn-block mt-3">Upload</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
