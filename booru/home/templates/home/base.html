@@ -16,7 +16,29 @@
 
     {% block header %}{% endblock %}  <!-- Header block for additional styles/scripts -->
 
-    <title>{% block title %}Your Website{% endblock %}</title>
+    <title>{% block title %}KyunBooru{% endblock %}</title>
+    <style>
+        /* Add your CSS styles here */
+        .search-bar-container {
+            text-align: right;
+            padding: 10px;
+        }
+        .search-bar {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+            margin-right: 10px;
+        }
+        .search-button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
@@ -43,9 +65,23 @@
                 </li>
                 {% endif %}
             </ul>
+            <div class="container-fluid">
+                <div class="row justify-content-end">
+                    <div class="col-lg-auto col-md-6">
+                        <div class="search-bar-container">
+                            <form action="{% url 'post:post_list' %}" method="get">
+                                <input type="text" name="tags" class="search-bar" placeholder="Search by tags">
+                                <button type="submit" class="search-button">Search</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 </nav>
+
 
 <div class="container mt-4">
     {% block content %}{% endblock %}

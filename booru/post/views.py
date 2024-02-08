@@ -4,6 +4,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm
 from .models import Post
 
+from django.db.models import Q
+
+NUM_POSTS = 12
+
 class UploadFileView(FormView):
     template_name = 'post/upload_file.html'
     form_class = PostForm
@@ -31,9 +35,47 @@ class UploadFileView(FormView):
 
 class PostListView(ListView):
     model = Post
-    template_name = 'post_list.html'  # Create this template
+    template_name = 'post/post_list.html'
     context_object_name = 'posts'
-    ordering = ['-posted_date']
+    paginate_by = NUM_POSTS
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tags_param = self.request.GET.get('tags')
+        
+        if tags_param:
+            if tags_param == 'all':
+                return queryset.order_by('-posted_date')  # Return all posts if 'all' is provided
+            
+            # Split the search tags by spaces
+            search_tags = tags_param.split()
+
+            print(search_tags)
+
+            # Initialize a Q object to build the query dynamically
+            q_object = Q()
+
+            # Iterate over each search tag
+            for tag in search_tags:
+                if tag.startswith('-'):
+                    # Exclude posts with the tag if it's a blacklist tag
+                    q_object &= ~(
+                        Q(tags__startswith=tag[1:]) |
+                        Q(tags__contains=' ' + tag[1:] + ' ') |
+                        Q(tags__endswith=tag[1:])
+                    )
+                else:
+                    # Include posts with the tag
+                    q_object &= (
+                        Q(tags__startswith=tag) |
+                        Q(tags__contains=' ' + tag + ' ') |
+                        Q(tags__endswith=tag)
+                    )
+
+            # Filter the queryset based on the constructed Q object
+            queryset = queryset.filter(q_object)
+
+        return queryset.order_by('-posted_date')
 
 class PostDetailView(DetailView):
     model = Post
