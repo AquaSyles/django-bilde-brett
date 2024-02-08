@@ -1,0 +1,52 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">{{ post.title }}</h1>
+                    <p class="card-text">Posted by: {{ post.user.username }}</p>
+                    <p class="card-text">Posted date: {{ post.posted_date }}</p>
+                    <p class="card-text">Tags: {{ post.tags }}</p>
+                    <p class="card-text">Rating: {{ post.get_rating_display }}</p>
+                    <p class="card-text">Score: {{ post.score }}</p>
+                    {% if post.source %}
+                    <p class="card-text">Source: <a href="{{ post.source }}">{{ post.source }}</a></p>
+                    {% endif %}
+                    {% if post.file %}
+                        {% if post.file.url %}
+                            {% if post.file.url|lower|slice:'-3:' == 'mp4' %}
+                                <div class="video-container">
+                                    <video width="100%" height="auto" poster="" controls crossorigin>
+                                        <source src="{{ post.file.url }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            {% else %}
+                                <img class="img-fluid" src="{{ post.file.url }}" alt="{{ post.title }}">
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <p>No file attached.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrastyles %}
+{{ block.super }}
+<style>
+    .video-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px; /* Adjust this value as needed */
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}

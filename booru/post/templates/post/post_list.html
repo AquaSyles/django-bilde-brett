@@ -10,7 +10,16 @@
             <div class="card">
                 {% if post.file %}
                     {% if post.file.url %}
-                        <img class="card-img-top" src="{{ post.file.url|slice:'1:' }}" alt="Image">
+                        <a href="{% url 'post:post_detail' post.id %}">
+                            {% if post.file.url|lower|slice:'-3:' == 'mp4' %}
+                                <video width="100%" controls poster="{{ post.file.url }}">
+                                    <source src="{{ post.file.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% else %}
+                                <img class="card-img-top" src="{{ post.file.url }}" alt="Image">
+                            {% endif %}
+                        </a>
                     {% endif %}
                 {% endif %}
             </div>
