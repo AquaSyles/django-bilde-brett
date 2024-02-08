@@ -55,22 +55,32 @@ class PostListView(ListView):
             # Initialize a Q object to build the query dynamically
             q_object = Q()
 
-            # Iterate over each search tag
-            for tag in search_tags:
+            # If only one tag is provided, add a parameter to check equality
+            if len(search_tags) == 1:
+                tag = search_tags[0]
                 if tag.startswith('-'):
                     # Exclude posts with the tag if it's a blacklist tag
-                    q_object &= ~(
-                        Q(tags__startswith=tag[1:]) |
-                        Q(tags__contains=' ' + tag[1:] + ' ') |
-                        Q(tags__endswith=tag[1:])
-                    )
+                    q_object &= ~Q(tags__startswith=tag[1:])
                 else:
                     # Include posts with the tag
-                    q_object &= (
-                        Q(tags__startswith=tag) |
-                        Q(tags__contains=' ' + tag + ' ') |
-                        Q(tags__endswith=tag)
-                    )
+                    q_object &= Q(tags__startswith=tag)
+            else:
+                # Iterate over each search tag
+                for tag in search_tags:
+                    if tag.startswith('-'):
+                        # Exclude posts with the tag if it's a blacklist tag
+                        q_object &= ~(
+                            Q(tags__startswith=tag[1:] + ' ') |
+                            Q(tags__contains=' ' + tag[1:] + ' ') |
+                            Q(tags__endswith=' ' + tag[1:])
+                        )
+                    else:
+                        # Include posts with the tag
+                        q_object &= (
+                            Q(tags__startswith=tag + ' ') |
+                            Q(tags__contains=' ' + tag + ' ') |
+                            Q(tags__endswith=' ' + tag)
+                        )
 
             # Filter the queryset based on the constructed Q object
             queryset = queryset.filter(q_object)
