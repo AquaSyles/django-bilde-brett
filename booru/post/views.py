@@ -40,52 +40,48 @@ class PostListView(ListView):
     paginate_by = NUM_POSTS
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        # Ordered object of all posts
+        queryset = super().get_queryset().order_by('-posted_date')
         tags_param = self.request.GET.get('tags')
         
-        if tags_param:
-            if tags_param == 'all':
-                return queryset.order_by('-posted_date')  # Return all posts if 'all' is provided
-            
-            # Split the search tags by spaces
-            search_tags = tags_param.split()
+        # Returns all images if no search tags or if the user searched using the all tag
+        if tags_param and tags_param != 'all':
 
-            print(search_tags)
+            return self.filter_posts_by_tags(queryset, tags_param)
 
-            # Initialize a Q object to build the query dynamically
-            q_object = Q()
+        return queryset
 
-            # If only one tag is provided, add a parameter to check equality
-            if len(search_tags) == 1:
-                tag = search_tags[0]
-                if tag.startswith('-'):
-                    # Exclude posts with the tag if it's a blacklist tag
-                    q_object &= ~Q(tags__startswith=tag[1:])
-                else:
-                    # Include posts with the tag
-                    q_object &= Q(tags__startswith=tag)
+
+    def filter_posts_by_tags(self, queryset, tags_param):
+        search_tags = self.parse_tags_param(tags_param)
+        filtered_posts = []
+
+        for post in queryset:
+            post_tags = set(post.tags.split())
+            if self.post_contains_tags(post_tags, search_tags):
+                filtered_posts.append(post)
+
+        return filtered_posts
+
+    def parse_tags_param(self, tags_param):
+        search_tags = tags_param.split()
+        include_tags = set()
+        exclude_tags = set()
+
+        for tag in search_tags:
+            if tag.startswith('-'):
+                exclude_tags.add(tag[1:])
             else:
-                # Iterate over each search tag
-                for tag in search_tags:
-                    if tag.startswith('-'):
-                        # Exclude posts with the tag if it's a blacklist tag
-                        q_object &= ~(
-                            Q(tags__startswith=tag[1:] + ' ') |
-                            Q(tags__contains=' ' + tag[1:] + ' ') |
-                            Q(tags__endswith=' ' + tag[1:])
-                        )
-                    else:
-                        # Include posts with the tag
-                        q_object &= (
-                            Q(tags__startswith=tag + ' ') |
-                            Q(tags__contains=' ' + tag + ' ') |
-                            Q(tags__endswith=' ' + tag)
-                        )
+                include_tags.add(tag)
 
-            # Filter the queryset based on the constructed Q object
-            queryset = queryset.filter(q_object)
+        return include_tags, exclude_tags
 
-        return queryset.order_by('-posted_date')
+    def post_contains_tags(self, post_tags, search_tags):
+        include_tags, exclude_tags = search_tags
+        return include_tags.issubset(post_tags) and not any(tag in post_tags for tag in exclude_tags)
+
+
+
 
 class PostDetailView(DetailView):
     model = Post

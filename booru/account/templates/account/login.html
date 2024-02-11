@@ -1,11 +1,11 @@
-<!-- account/templates/account/login.html -->
 {% extends 'home/base.html' %}
-{% load static %}  <!-- Load static files -->
+{% load static %}
+
+<!-- error with login and sign in where the css is making the navbar look way too big and stuff -->
 
 {% block title %}Log In - Your Website{% endblock %}
 
 {% block header %}
-  <!-- Link to custom CSS file for login page -->
   <link rel="stylesheet" href="{% static 'account/css/login.css' %}">
 {% endblock %}
 
