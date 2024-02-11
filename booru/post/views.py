@@ -5,7 +5,7 @@ from .forms import PostForm
 from .models import Post
 from django.core.paginator import Paginator
 
-NUM_POSTS = 6
+NUM_POSTS = 12
 
 class UploadFileView(FormView):
     template_name = 'post/upload_file.html'
@@ -32,6 +32,8 @@ class UploadFileView(FormView):
         form.save()
         return super().form_valid(form)
 
+
+# TODO: Make it so you can use the paginator with tags as well
 class PostListView(ListView):
     model = Post
     template_name = 'post/post_list.html'
