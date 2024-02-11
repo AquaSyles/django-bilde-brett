@@ -3,10 +3,9 @@ from django.views.generic import ListView, DetailView
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm
 from .models import Post
+from django.core.paginator import Paginator
 
-from django.db.models import Q
-
-NUM_POSTS = 12
+NUM_POSTS = 6
 
 class UploadFileView(FormView):
     template_name = 'post/upload_file.html'
@@ -80,7 +79,14 @@ class PostListView(ListView):
         include_tags, exclude_tags = search_tags
         return include_tags.issubset(post_tags) and not any(tag in post_tags for tag in exclude_tags)
 
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        paginator = Paginator(queryset, self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
+        return context
 
 
 class PostDetailView(DetailView):
